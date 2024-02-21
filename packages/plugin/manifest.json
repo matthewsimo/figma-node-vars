@@ -1,0 +1,14 @@
+{
+  "name": "Figma Plugin Template",
+  "api": "1.0.0",
+  "main": "dist/code/index.js",
+  "ui": "dist/ui/index.html",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "enablePrivatePluginApi": true,
+  "permissions": ["currentuser", "teamlibrary"],
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
+}

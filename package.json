@@ -1,0 +1,15 @@
+{
+  "name": "figma-plugin-project",
+  "version": "1.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^1.10.16"
+  },
+  "scripts": {
+    "dev": "bunx --bun turbo run dev",
+    "build": "bunx --bun turbo run build",
+    "lint": "bunx --bun turbo run lint"
+  }
+}
