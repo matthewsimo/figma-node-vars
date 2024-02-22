@@ -1,4 +1,4 @@
-## Figma Plugin Template
+## Figma Node Vars Plugin
 
 This is the plugin package. `src/main.tsx` is the entry point for the ui, `src/code.ts` is the entry point for the plugin' main (node) process. There are two vite builds, one to control each.
 

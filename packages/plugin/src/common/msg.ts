@@ -1,3 +1,5 @@
+import { NormalizedSelection } from "./utils";
+
 export type PostMessage =
   | {
       type: "refreshFigmaData";
@@ -29,6 +31,7 @@ export type PostMessage =
 export type UIPostMessagePayload = {
   fileKey: string;
   currentUser: string;
+  selection: NormalizedSelection[];
 };
 
 export type UIPostMessage = {

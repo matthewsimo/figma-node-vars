@@ -1,9 +1,8 @@
 import { defineConfig } from "vite";
+import path from "path";
 import react from "@vitejs/plugin-react-swc";
 import svgr from "vite-plugin-svgr";
 import { viteSingleFile } from "vite-plugin-singlefile";
-
-import { exec } from "child_process";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -21,9 +20,6 @@ export default defineConfig(({ mode }) => {
         name: "post-build-command",
         closeBundle: async () => {
           console.log("Update manifest.json");
-          // exec(
-          //   "cat manifest.json > temp.json && cat temp.json > manifest.json && rm temp.json"
-          // );
         },
       },
     ],
@@ -37,6 +33,11 @@ export default defineConfig(({ mode }) => {
       assetsInlineLimit: 100000000,
       rollupOptions: {
         output: {},
+      },
+    },
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
       },
     },
   };

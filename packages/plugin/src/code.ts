@@ -1,4 +1,5 @@
 import { postToUI, PostMessage } from "./common/msg";
+import { normalizeSelection } from "./common/utils";
 // Figma Documentation Links:
 // https://www.figma.com/plugin-docs/how-plugins-run
 // https://www.figma.com/plugin-docs/api/api-reference/
@@ -10,12 +11,19 @@ const settings = {
   includeLibraries: false,
 };
 
+figma.on("selectionchange", () => {
+  console.log("selection change", figma.currentPage.selection);
+
+  getFigmaData();
+});
+
 const getFigmaData = async () => {
   console.log("GET FIGMA DATA", settings);
 
   const payload = {
     fileKey: figma.fileKey || "Unknown",
     currentUser: (figma.currentUser && figma.currentUser.name) || "Unknown",
+    selection: normalizeSelection(figma.currentPage.selection),
   };
   console.log("Plugin:");
   console.log(payload);
