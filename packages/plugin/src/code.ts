@@ -11,19 +11,30 @@ const settings = {
   includeLibraries: false,
 };
 
-figma.on("selectionchange", () => {
+const selectionchangeHandler = () => {
   console.log("selection change", figma.currentPage.selection);
 
   getFigmaData();
+};
+
+figma.on("selectionchange", selectionchangeHandler);
+
+figma.on("close", () => {
+  console.log("closing plugin");
+  figma.off("selectionchange", selectionchangeHandler);
 });
 
-const getFigmaData = async () => {
+const getFigmaData = () => {
   console.log("GET FIGMA DATA", settings);
+  const selection = normalizeSelection(figma.currentPage.selection);
+  // @TODO - get collections for vars that are in selection
+  const modes = [];
 
   const payload = {
     fileKey: figma.fileKey || "Unknown",
     currentUser: (figma.currentUser && figma.currentUser.name) || "Unknown",
-    selection: normalizeSelection(figma.currentPage.selection),
+    selection,
+    modes,
   };
   console.log("Plugin:");
   console.log(payload);
@@ -47,6 +58,7 @@ figma.ui.onmessage = async (msg: PostMessage) => {
       console.log(msg.payload);
       break;
     case "close":
+      console.log("closing!");
       figma.closePlugin();
       break;
     case "notifiy":

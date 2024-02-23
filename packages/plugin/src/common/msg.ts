@@ -32,6 +32,7 @@ export type UIPostMessagePayload = {
   fileKey: string;
   currentUser: string;
   selection: NormalizedSelection[];
+  modes;
 };
 
 export type UIPostMessage = {

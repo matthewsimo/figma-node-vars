@@ -61,6 +61,7 @@ type ReducerAction =
     };
 
 function appReducer(data: AppContextData, action: ReducerAction) {
+  console.log("appReducer:", { data, action });
   switch (action.type) {
     case "UPDATE_FIGMA_DATA":
       return {

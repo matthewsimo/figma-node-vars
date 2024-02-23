@@ -1,4 +1,4 @@
-export type NormalizedVariable = Pick<
+export type PreNormalizedVariable = Pick<
   Variable,
   | "id"
   | "name"
@@ -7,6 +7,7 @@ export type NormalizedVariable = Pick<
   | "valuesByMode"
   | "remote"
   | "scopes"
+  | "variableCollectionId"
   | "resolveForConsumer"
 >;
 
@@ -15,11 +16,17 @@ export type ResolvedValue = {
   resolvedType: VariableResolvedDataType;
 };
 
+export type NormalizedVariable = Omit<
+  PreNormalizedVariable,
+  "resolveForConsumer"
+> &
+  ResolvedValue;
+
 export type NormalizedSelection = Pick<
   SceneNode,
   "id" | "name" | "boundVariables" | "type"
 > & {
-  variables: Record<string, NormalizedVariable & ResolvedValue>;
+  variables: Record<string, NormalizedVariable>;
 };
 
 export const normalizeSelection = (
@@ -36,11 +43,13 @@ export const normalizeSelection = (
           variables[v.id] = getVarById(v.id);
           variables[v.id]["resolvedValue"] =
             variables[v.id].resolveForConsumer(node);
+          delete variables[v.id].resolveForConsumer;
         });
       } else {
         variables[boundVariables[k].id] = getVarById(boundVariables[k].id);
         variables[boundVariables[k].id]["resolvedValue"] =
           variables[boundVariables[k].id].resolveForConsumer(node);
+        delete variables[boundVariables[k].id].resolveForConsumer;
       }
     });
 
@@ -54,7 +63,7 @@ export const normalizeSelection = (
   });
 };
 
-export const getVarById = (varId: string): NormalizedVariable => {
+export const getVarById = (varId: string): PreNormalizedVariable => {
   const v = figma.variables.getVariableById(varId) as Variable;
   const {
     id = "unknown",
@@ -63,8 +72,9 @@ export const getVarById = (varId: string): NormalizedVariable => {
     description = "unknown",
     valuesByMode = {},
     scopes = [],
-    resolveForConsumer,
     remote,
+    variableCollectionId,
+    resolveForConsumer,
   } = v;
   const variable = {
     id,
@@ -73,8 +83,9 @@ export const getVarById = (varId: string): NormalizedVariable => {
     description,
     valuesByMode,
     scopes,
-    resolveForConsumer,
     remote,
+    variableCollectionId,
+    resolveForConsumer,
   };
   false && console.log({ variable });
   return variable;
