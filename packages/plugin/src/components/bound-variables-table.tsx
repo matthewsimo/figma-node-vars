@@ -90,7 +90,7 @@ const BoundVariablesTable = ({ boundVariables, variables }) => {
           <TableRow>
             <TableHead className="w-[100px]">Attribute</TableHead>
             <TableHead>Variable Name</TableHead>
-            <TableHead>Value</TableHead>
+            <TableHead className="text-right">Value</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -118,15 +118,3 @@ const BoundVariablesTable = ({ boundVariables, variables }) => {
 };
 
 export default BoundVariablesTable;
-
-//                true /* Variables logger */ &&
-//                  (typeof deduped[boundVar].length === "number" ? (
-//                    <>
-//                      {deduped[boundVar].map(({ id }) => (
-//                        <Logger key={`var-${id}`} data={variables[id]} />
-//                      ))}
-//                    </>
-//                  ) : (
-//                    <Logger data={variables[deduped[boundVar].id]} />
-//                  ))
-//

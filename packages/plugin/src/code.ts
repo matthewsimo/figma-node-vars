@@ -1,5 +1,7 @@
+import { normalizeCollections } from "./common/collections";
 import { postToUI, PostMessage } from "./common/msg";
-import { normalizeSelection } from "./common/utils";
+import { normalizeSelection } from "./common/selection";
+import { normalizeVariables } from "./common/variables";
 // Figma Documentation Links:
 // https://www.figma.com/plugin-docs/how-plugins-run
 // https://www.figma.com/plugin-docs/api/api-reference/
@@ -9,6 +11,18 @@ figma.ui.resize(500, 800);
 
 const settings = {
   includeLibraries: false,
+};
+
+const fileKey = figma.fileKey || "Unknown";
+const currentUser = (figma.currentUser && figma.currentUser.name) || "Unknown";
+let collections = {};
+let variables = {};
+
+const getVarData = async () => {
+  collections = await normalizeCollections();
+  variables = await normalizeVariables();
+
+  getFigmaData();
 };
 
 const selectionchangeHandler = () => {
@@ -27,21 +41,20 @@ figma.on("close", () => {
 const getFigmaData = () => {
   console.log("GET FIGMA DATA", settings);
   const selection = normalizeSelection(figma.currentPage.selection);
-  // @TODO - get collections for vars that are in selection
-  const modes = [];
 
   const payload = {
-    fileKey: figma.fileKey || "Unknown",
-    currentUser: (figma.currentUser && figma.currentUser.name) || "Unknown",
+    fileKey,
+    currentUser,
     selection,
-    modes,
+    collections,
+    variables,
   };
   console.log("Plugin:");
   console.log(payload);
   postToUI(payload);
 };
 
-getFigmaData();
+getVarData();
 
 // Calls to "parent.postMessage" from within the HTML page will trigger this
 // callback. The callback will be passed the "pluginMessage" property of the
@@ -51,7 +64,7 @@ figma.ui.onmessage = async (msg: PostMessage) => {
 
   switch (msg.type) {
     case "refreshFigmaData":
-      await getFigmaData();
+      await getVarData();
       break;
     case "log": // Demonstrate UI passing data to code.ts
       console.log("payload:");

@@ -19,7 +19,8 @@ const initData: AppContextData = {
     selection: [],
     fileKey: "",
     currentUser: "",
-    modes: [],
+    collections: {},
+    variables: {},
   },
   settings: {},
   state: {

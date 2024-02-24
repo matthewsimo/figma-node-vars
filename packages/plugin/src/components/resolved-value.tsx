@@ -24,7 +24,7 @@ const ResolvedValue = ({ resolvedValue }: { resolvedValue: ResolvedValue }) => {
           {colorToString(value as RGBA)}
         </p>
       ) : (
-        <p className="text-2xl">{value as string}</p>
+        <p className="text-2xl text-right">{String(value)}</p>
       )}
 
       {false && <Logger data={value} />}
