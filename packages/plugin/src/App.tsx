@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef } from "react";
 import { UIPostMessage, postToFigma } from "./common/msg";
 import { useAppState, useDispatch, useFigmaData } from "./hooks";
+import BoundVariablesTable from "./components/bound-variables-table";
+import Logger from "./components/logger";
+import EmptyAlert from "./components/empty-alert";
 
 function App() {
   const dispatch = useDispatch();
@@ -60,71 +63,35 @@ function App() {
 
   return (
     <main className="w-full h-screen p-4" ref={mainRef}>
-      <h1 className="font-bold text-2xl pb-4">Node Vars</h1>
+      <h1 className="font-bold text-3xl pb-4">Node Vars</h1>
       <div className="card">
-        {selection.length === 0 && <p>No nodes selected</p>}
+        {selection.length === 0 && (
+          <div className="py-6">
+            <EmptyAlert
+              title={"No nodes selected"}
+              description={"Select some nodes and we'll show you variable info"}
+            />
+          </div>
+        )}
 
         {selection.length > 0 && (
-          <ul>
+          <ul className="space-y-8">
             {selection.map((node) => {
               return (
-                <li key={`node-${node.id}`}>
+                <li key={`node-${node.id}`} className="space-y-2">
                   <header>
-                    <h3>{node.name}</h3>
-                    <p>
+                    <h2 className="text-2xl">{node.name}</h2>
+                    <p className="text-muted-foreground">
                       ID: {node.id} - Type: {node.type}
                     </p>
                   </header>
                   <div>
-                    {Object.keys(node.boundVariables).length === 0 ? (
-                      <p>No bound variables</p>
-                    ) : (
-                      <ul>
-                        {Object.keys(node.boundVariables).map((boundVar) => {
-                          return (
-                            <li key={`bound-var-key-${boundVar}`}>
-                              <h4>{boundVar}</h4>
-                              {typeof node.boundVariables[boundVar].length ===
-                              "number" ? (
-                                <>
-                                  {node.boundVariables[boundVar].map(
-                                    ({ id }) => (
-                                      <>
-                                        <pre>
-                                          {JSON.stringify(
-                                            node.variables[id],
-                                            undefined,
-                                            2
-                                          )}
-                                        </pre>
-                                      </>
-                                    )
-                                  )}
-                                </>
-                              ) : (
-                                <>
-                                  <pre>
-                                    {JSON.stringify(
-                                      node.variables[
-                                        node.boundVariables[boundVar].id
-                                      ],
-                                      undefined,
-                                      2
-                                    )}
-                                  </pre>
-                                </>
-                              )}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    )}
+                    <BoundVariablesTable
+                      boundVariables={node.boundVariables}
+                      variables={node.variables}
+                    />
                   </div>
-                  {false && (
-                    <div className="">
-                      <pre>{JSON.stringify(node, undefined, 2)}</pre>
-                    </div>
-                  )}
+                  {false && <Logger data={node} />}
                 </li>
               );
             })}

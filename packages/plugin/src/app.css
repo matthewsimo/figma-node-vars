@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --radius: 0.5rem;
+}
+
 .figma-light {
   --background: 0 0% 100%;
   --foreground: 240 10% 3.9%;
@@ -30,8 +34,6 @@
   --border: 240 5.9% 90%;
   --input: 240 5.9% 90%;
   --ring: 240 10% 3.9%;
-
-  --radius: 0.5rem;
 }
 
 .figma-dark {

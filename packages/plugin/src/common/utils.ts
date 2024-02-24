@@ -19,8 +19,9 @@ export type ResolvedValue = {
 export type NormalizedVariable = Omit<
   PreNormalizedVariable,
   "resolveForConsumer"
-> &
-  ResolvedValue;
+> & {
+  resolvedValue: ResolvedValue;
+};
 
 export type NormalizedSelection = Pick<
   SceneNode,
@@ -32,7 +33,8 @@ export type NormalizedSelection = Pick<
 export const normalizeSelection = (
   selection: readonly SceneNode[]
 ): NormalizedSelection[] => {
-  return selection.map((node): NormalizedSelection => {
+  const normalizedSelection = [];
+  selection.forEach((node): void => {
     const { id, name, boundVariables = {}, type } = node;
     console.log({ id, name, variables: boundVariables });
     const variables = {};
@@ -53,14 +55,21 @@ export const normalizeSelection = (
       }
     });
 
-    return {
+    normalizedSelection.push({
       id,
       name,
       boundVariables,
       type,
       variables,
-    };
+    });
+
+    if ("children" in node) {
+      const normalizedChildren = normalizeSelection(node.children);
+      normalizedSelection.push(...normalizedChildren);
+    }
   });
+
+  return normalizedSelection;
 };
 
 export const getVarById = (varId: string): PreNormalizedVariable => {

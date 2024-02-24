@@ -1,5 +1,5 @@
 {
-  "name": "Figma Node Vars",
+  "name": "Node Vars",
   "api": "1.0.0",
   "main": "dist/code/index.js",
   "ui": "dist/ui/index.html",
