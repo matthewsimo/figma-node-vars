@@ -1,4 +1,3 @@
-import { NormalizedVariable } from "@/common/utils";
 import EmptyAlert from "./empty-alert";
 import Logger from "./logger";
 import {
@@ -10,56 +9,77 @@ import {
   TableRow,
 } from "./ui/table";
 import ResolvedValue from "./resolved-value";
-
-const radiusKeys = [
-  "topLeftRadius",
-  "topRightRadius",
-  "bottomLeftRadius",
-  "bottomRightRadius",
-];
-const shouldCollapseRadius = (boundVariables) => {
-  if (radiusKeys.every((k) => k in boundVariables)) {
-    return radiusKeys.every(
-      (k) => boundVariables[k].id === boundVariables[radiusKeys[0]].id
-    );
-  } else {
-    return false;
-  }
-};
-
-const collapsRadius = (boundVariables) => {
-  const radiusValue = boundVariables[radiusKeys[0]];
-  radiusKeys.forEach((k) => {
-    delete boundVariables[k];
-  });
-
-  boundVariables.radius = radiusValue;
-  return boundVariables;
-};
-
-const capitalize = (str: string) => {
-  console.log({ str });
-
-  return str
-    .split("")
-    .map((char, i) => (i === 0 ? char.toUpperCase() : char))
-    .join("");
-};
+import { NodeVariable, nodeVarString } from "@/common/variables";
+import { capitalize, forMS, handleCopy } from "@/common/utils";
+import { Button } from "./ui/button";
+import { Check, Copy, Loader2 } from "lucide-react";
+import { useRef, useState } from "react";
 
 const BoundVariableTableRow = ({
   boundVar,
   variable,
 }: {
   boundVar: string;
-  variable: NormalizedVariable;
+  variable: NodeVariable;
 }) => {
+  const textareaEl = useRef<HTMLTextAreaElement>(null);
+
+  const [copyState, setCopyState] = useState<
+    "initial" | "pending" | "complete"
+  >("initial");
+  const handleClick = async () => {
+    if (copyState === "initial") {
+      setCopyState("pending");
+      handleCopy(textareaEl, nodeVarString(boundVar, variable), variable.name);
+
+      await forMS(250);
+      setCopyState("complete");
+
+      await forMS(500);
+      setCopyState("initial");
+    }
+  };
+
+  const iconClasses = `aspect-square w-4`;
   return (
     <>
       <TableRow>
         <TableCell>{capitalize(boundVar)}</TableCell>
         <TableCell>{variable.name}</TableCell>
-        <TableCell className="font-mono">
+        <TableCell className="font-mono text-right">
           <ResolvedValue resolvedValue={variable.resolvedValue} />
+        </TableCell>
+        <TableCell>
+          <Button
+            disabled={copyState !== "initial"}
+            size="xs"
+            variant="ghost"
+            onClick={handleClick}
+          >
+            {copyState === "pending" && (
+              <Loader2
+                className={`${iconClasses} animate-spin`}
+                color="#EAAB31"
+                aria-label="Copy started"
+              />
+            )}
+            {copyState === "complete" && (
+              <Check
+                className={iconClasses}
+                color="#25952A"
+                aria-label="Copy completed"
+              />
+            )}
+            {copyState === "initial" && (
+              <Copy className={iconClasses} aria-label="Copy value" />
+            )}
+          </Button>
+          <textarea
+            ref={textareaEl}
+            readOnly
+            className="opacity-0 absolute w-[1px] h-[1px]"
+            value={nodeVarString(boundVar, variable)}
+          />
         </TableCell>
       </TableRow>
       {false && (
@@ -74,10 +94,6 @@ const BoundVariableTableRow = ({
 };
 
 const BoundVariablesTable = ({ boundVariables, variables }) => {
-  const deduped = shouldCollapseRadius({ ...boundVariables })
-    ? collapsRadius({ ...boundVariables })
-    : boundVariables;
-
   return Object.keys(boundVariables).length === 0 ? (
     <EmptyAlert
       title={"No bound variables"}
@@ -94,9 +110,9 @@ const BoundVariablesTable = ({ boundVariables, variables }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Object.keys(deduped).map((boundVar) =>
-            typeof deduped[boundVar].length === "number" ? (
-              deduped[boundVar].map((bVar) => (
+          {Object.keys(boundVariables).map((boundVar) =>
+            typeof boundVariables[boundVar].length === "number" ? (
+              boundVariables[boundVar].map((bVar) => (
                 <BoundVariableTableRow
                   key={`var-${bVar.id}`}
                   boundVar={boundVar}
@@ -107,7 +123,7 @@ const BoundVariablesTable = ({ boundVariables, variables }) => {
               <BoundVariableTableRow
                 key={`boundVar-${boundVar}`}
                 boundVar={boundVar}
-                variable={variables[deduped[boundVar].id]}
+                variable={variables[boundVariables[boundVar].id]}
               />
             )
           )}

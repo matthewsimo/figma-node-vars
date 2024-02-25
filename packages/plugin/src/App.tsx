@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef } from "react";
 import { UIPostMessage, postToFigma } from "./common/msg";
 import { useAppState, useDispatch, useFigmaData } from "./hooks";
-import BoundVariablesTable from "./components/bound-variables-table";
-import Logger from "./components/logger";
 import EmptyAlert from "./components/empty-alert";
+import Header from "./components/header";
+import SelectedNode from "./components/selected-node";
 
 function App() {
   const dispatch = useDispatch();
@@ -63,8 +63,9 @@ function App() {
 
   return (
     <main className="w-full h-screen p-4" ref={mainRef}>
-      <h1 className="font-bold text-3xl pb-4">Node Vars</h1>
-      <div className="card">
+      <Header />
+
+      <div>
         {selection.length === 0 && (
           <div className="py-6">
             <EmptyAlert
@@ -77,23 +78,7 @@ function App() {
         {selection.length > 0 && (
           <ul className="space-y-8">
             {selection.map((node) => {
-              return (
-                <li key={`node-${node.id}`} className="space-y-2">
-                  <header>
-                    <h2 className="text-2xl">{node.name}</h2>
-                    <p className="text-muted-foreground">
-                      ID: {node.id} - Type: {node.type}
-                    </p>
-                  </header>
-                  <div>
-                    <BoundVariablesTable
-                      boundVariables={node.boundVariables}
-                      variables={node.variables}
-                    />
-                  </div>
-                  {false && <Logger data={node} />}
-                </li>
-              );
+              return <SelectedNode key={`node-${node.id}`} node={node} />;
             })}
           </ul>
         )}

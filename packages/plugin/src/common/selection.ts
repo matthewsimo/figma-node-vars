@@ -48,3 +48,62 @@ export const normalizeSelection = (
 
   return normalizedSelection;
 };
+
+const shouldCollapseKeys = (boundVariables, keys: string[]) => {
+  if (keys.every((k) => k in boundVariables)) {
+    return keys.every(
+      (k) => boundVariables[k].id === boundVariables[keys[0]].id
+    );
+  } else {
+    return false;
+  }
+};
+
+const collapseKeysToKey = (boundVariables, keys: string[], key: string) => {
+  const value = boundVariables[keys[0]];
+  keys.forEach((k) => {
+    delete boundVariables[k];
+  });
+
+  boundVariables[key] = value;
+  return boundVariables;
+};
+
+const radiusKeys = [
+  "topLeftRadius",
+  "topRightRadius",
+  "bottomLeftRadius",
+  "bottomRightRadius",
+];
+
+const paddingBlockKeys = ["paddingTop", "paddingBottom"];
+const paddingInlineKeys = ["paddingLeft", "paddingRight"];
+const paddingKeys = [...paddingBlockKeys, ...paddingInlineKeys];
+
+export const collapseNodeFields = (
+  boundVariables: SceneNode["boundVariables"]
+) => {
+  let boundVariablesCopy = { ...boundVariables };
+
+  boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, radiusKeys)
+    ? collapseKeysToKey(boundVariablesCopy, radiusKeys, "radius")
+    : boundVariables;
+
+  boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, paddingKeys)
+    ? collapseKeysToKey(boundVariablesCopy, paddingKeys, "padding")
+    : boundVariables;
+
+  boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, paddingBlockKeys)
+    ? collapseKeysToKey(boundVariablesCopy, paddingBlockKeys, "paddingVertical")
+    : boundVariables;
+
+  boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, paddingInlineKeys)
+    ? collapseKeysToKey(
+        boundVariablesCopy,
+        paddingInlineKeys,
+        "paddingHorizontal"
+      )
+    : boundVariables;
+
+  return boundVariablesCopy;
+};

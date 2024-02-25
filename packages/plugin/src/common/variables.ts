@@ -1,3 +1,5 @@
+import { colorToString } from "./utils";
+
 export type NormalizedVariable = Pick<
   Variable,
   | "id"
@@ -79,4 +81,56 @@ export const normalizeVariables = async (): Promise<NormalizedVariableMap> => {
     };
   });
   return variables;
+};
+
+const sanitizeRule = (boundVariableKey: string): string => {
+  switch (boundVariableKey) {
+    case "radius":
+      return "border-radius";
+    case "topLeftRadius":
+      return "border-top-left-radius";
+    case "topRightRadius":
+      return "border-top-right-radius";
+    case "bottomLeftRadius":
+      return "border-bottom-left-radius";
+    case "bottomRightRadius":
+      return "border-bottom-right-radius";
+    case "paddingTop":
+      return "padding-block-start";
+    case "paddingBottom":
+      return "padding-block-end";
+    case "paddingVertical":
+      return "padding-block";
+    case "paddingLeft":
+      return "padding-inline-start";
+    case "paddingRight":
+      return "padding-inline-end";
+    case "paddingHorizontal":
+      return "padding-inline";
+    case "fills":
+      return "background-color";
+    case "strokes":
+      return "border-color";
+    default:
+      return boundVariableKey.toLowerCase().replace(" ", "-");
+  }
+};
+
+const sanitizeVarName = (varName: string): string =>
+  varName.toLowerCase().replace(" ", "-");
+
+const sanitizeValue = ({ value, resolvedType }: ResolvedValue): string =>
+  resolvedType === "COLOR" ? colorToString(value as RGBA) : String(value);
+
+export const nodeVarString = (
+  boundVariableKey: string,
+  nodeVariable: NodeVariable
+): string => {
+  const prop = sanitizeRule(boundVariableKey);
+  const name = sanitizeVarName(nodeVariable.name);
+
+  return `--${name}: ${sanitizeValue(nodeVariable.resolvedValue)};
+${prop}: var(--${name}, ${sanitizeValue(nodeVariable.resolvedValue)}${
+    nodeVariable.resolvedValue.resolvedType === "FLOAT" ? "px" : ""
+  });`;
 };
