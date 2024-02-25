@@ -87,15 +87,15 @@ export const collapseNodeFields = (
 
   boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, radiusKeys)
     ? collapseKeysToKey(boundVariablesCopy, radiusKeys, "radius")
-    : boundVariables;
+    : boundVariablesCopy;
 
   boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, paddingKeys)
     ? collapseKeysToKey(boundVariablesCopy, paddingKeys, "padding")
-    : boundVariables;
+    : boundVariablesCopy;
 
   boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, paddingBlockKeys)
     ? collapseKeysToKey(boundVariablesCopy, paddingBlockKeys, "paddingVertical")
-    : boundVariables;
+    : boundVariablesCopy;
 
   boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, paddingInlineKeys)
     ? collapseKeysToKey(
@@ -103,7 +103,7 @@ export const collapseNodeFields = (
         paddingInlineKeys,
         "paddingHorizontal"
       )
-    : boundVariables;
+    : boundVariablesCopy;
 
   return boundVariablesCopy;
 };
