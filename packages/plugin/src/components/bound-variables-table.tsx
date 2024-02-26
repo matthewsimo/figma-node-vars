@@ -1,5 +1,4 @@
 import EmptyAlert from "./empty-alert";
-import Logger from "./logger";
 import {
   Table,
   TableBody,
@@ -14,6 +13,7 @@ import { capitalize, forMS, handleCopy } from "@/common/utils";
 import { Button } from "./ui/button";
 import { Check, Copy, Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
+import { LogData } from "./logger";
 
 const BoundVariableTableRow = ({
   boundVar,
@@ -44,12 +44,12 @@ const BoundVariableTableRow = ({
   return (
     <>
       <TableRow>
-        <TableCell>{capitalize(boundVar)}</TableCell>
-        <TableCell>{variable.name}</TableCell>
-        <TableCell className="font-mono text-right">
+        <TableCell width={"35%"}>{capitalize(boundVar)}</TableCell>
+        <TableCell width={"50%"}>{variable.name}</TableCell>
+        <TableCell width={"10%"} className="font-mono text-right">
           <ResolvedValue resolvedValue={variable.resolvedValue} />
         </TableCell>
-        <TableCell>
+        <TableCell width={"5%"} align="right">
           <Button
             disabled={copyState !== "initial"}
             size="xs"
@@ -85,7 +85,7 @@ const BoundVariableTableRow = ({
       {false && (
         <TableRow>
           <TableCell colSpan={3}>
-            <Logger data={variable} />
+            <LogData data={variable} />
           </TableCell>
         </TableRow>
       )}
@@ -104,9 +104,10 @@ const BoundVariablesTable = ({ boundVariables, variables }) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Attribute</TableHead>
+            <TableHead>Attribute</TableHead>
             <TableHead>Variable Name</TableHead>
             <TableHead className="text-right">Value</TableHead>
+            <TableHead />
           </TableRow>
         </TableHeader>
         <TableBody>

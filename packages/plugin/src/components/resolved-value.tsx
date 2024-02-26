@@ -1,13 +1,11 @@
 import { colorToString } from "@/common/utils";
 import { NodeVariable } from "@/common/variables";
-import Logger from "./logger";
 import {
-  TooltipProvider,
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
-  TooltipArrow,
-} from "@radix-ui/react-tooltip";
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 const ResolvedValue = ({
   resolvedValue,
@@ -28,19 +26,16 @@ const ResolvedValue = ({
                 title={colorToString(value as RGBA)}
               />
             </TooltipTrigger>
-            <TooltipContent sideOffset={4} align="end">
+            <TooltipContent sideOffset={8} align="end" alignOffset={-8}>
               <div className="bg-background/90 p-2 rounded-md">
-                <TooltipArrow height={8} width={12} className="opacity-90" />
                 <p>{colorToString(value as RGBA)}</p>
               </div>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       ) : (
-        <p className="text-2xl">{String(value)}</p>
+        <p className="text-xl">{String(value)}</p>
       )}
-
-      {false && <Logger data={value} />}
     </>
   );
 };

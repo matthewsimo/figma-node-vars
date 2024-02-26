@@ -30,7 +30,7 @@ export const handleCopy = async (
 ) => {
   textareaEl?.current?.select();
 
-  console.log({ copy: true, content, name });
+  false && console.log({ copy: true, content, name });
   let message = "";
   let isError = false;
   try {

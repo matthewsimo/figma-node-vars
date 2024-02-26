@@ -1,6 +1,12 @@
+import { useEffect, useRef } from "react";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Logger = ({ data }: { data: any }) => (
+export const LogData = ({ data }: { data: any }) => (
   <pre>{JSON.stringify(data, undefined, 2)}</pre>
 );
 
-export default Logger;
+export const LogElement = ({ children }) => {
+  const ref = useRef();
+  useEffect(() => console.log(ref?.current), []);
+  return <div ref={ref}>{children}</div>;
+};

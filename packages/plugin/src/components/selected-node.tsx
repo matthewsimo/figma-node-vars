@@ -1,6 +1,5 @@
 import { NormalizedSelection, collapseNodeFields } from "@/common/selection";
 import BoundVariablesTable from "./bound-variables-table";
-import Logger from "./logger";
 import { pluralize } from "@/common/utils";
 
 const SelectedNode = ({ node }: { node: NormalizedSelection }) => {
@@ -29,7 +28,6 @@ const SelectedNode = ({ node }: { node: NormalizedSelection }) => {
           variables={node.variables}
         />
       </div>
-      {false && <Logger data={node} />}
     </li>
   );
 };
