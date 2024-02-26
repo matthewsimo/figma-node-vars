@@ -129,8 +129,10 @@ export const nodeVarString = (
   const prop = sanitizeRule(boundVariableKey);
   const name = sanitizeVarName(nodeVariable.name);
 
+  const isFloat = nodeVariable.resolvedValue.resolvedType === "FLOAT";
+
   return `--${name}: ${sanitizeValue(nodeVariable.resolvedValue)};
-${prop}: var(--${name}, ${sanitizeValue(nodeVariable.resolvedValue)}${
-    nodeVariable.resolvedValue.resolvedType === "FLOAT" ? "px" : ""
-  });`;
+${prop}: ${isFloat ? "calc(" : ""}var(--${name}, ${sanitizeValue(
+    nodeVariable.resolvedValue
+  )})${isFloat ? " * 1px)" : ""};`;
 };
