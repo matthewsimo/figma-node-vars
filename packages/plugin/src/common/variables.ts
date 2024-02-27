@@ -116,23 +116,68 @@ const sanitizeRule = (boundVariableKey: string): string => {
   }
 };
 
-const sanitizeVarName = (varName: string): string =>
-  varName.toLowerCase().replace(" ", "-");
+type SanitizedNodeVariable = { name: string; value: string; isFloat: boolean };
+const sanitizeNodeVariable = (
+  nodeVariable: NodeVariable
+): SanitizedNodeVariable => {
+  const { name, resolvedValue } = nodeVariable;
+  const { resolvedType, value } = resolvedValue;
 
-const sanitizeValue = ({ value, resolvedType }: ResolvedValue): string =>
-  resolvedType === "COLOR" ? colorToString(value as RGBA) : String(value);
+  return {
+    name: name.toLowerCase().replace(" ", "-"),
+    value:
+      resolvedType === "COLOR" ? colorToString(value as RGBA) : String(value),
+    isFloat: resolvedType === "FLOAT",
+  };
+};
+
+const varToCustomPropString = (nodeVariable: NodeVariable): string => {
+  const { name, value } = sanitizeNodeVariable(nodeVariable);
+  return `--${name}: ${value};`;
+};
+
+const varToCSSRule = (boundVariableKey, nodeVariable): string => {
+  const prop = sanitizeRule(boundVariableKey);
+  const { name, value, isFloat } = sanitizeNodeVariable(nodeVariable);
+  return `${prop}: ${isFloat ? "calc(" : ""}var(--${name}, ${value})${
+    isFloat ? " * 1px)" : ""
+  };`;
+};
 
 export const nodeVarString = (
   boundVariableKey: string,
   nodeVariable: NodeVariable
 ): string => {
-  const prop = sanitizeRule(boundVariableKey);
-  const name = sanitizeVarName(nodeVariable.name);
+  return [varToCustomPropString(nodeVariable)]
+    .concat(varToCSSRule(boundVariableKey, nodeVariable))
+    .join("\n");
+};
 
-  const isFloat = nodeVariable.resolvedValue.resolvedType === "FLOAT";
+export const nodeVarsString = (
+  boundVariables: SceneNode["boundVariables"],
+  nodeVariables: NodeVariableMap
+): string => {
+  const customProps = Object.keys(nodeVariables).map((key) =>
+    varToCustomPropString(nodeVariables[key])
+  );
+  const rules = [];
+  Object.keys(boundVariables).forEach((boundVariableKey, i) => {
+    if (typeof boundVariables[boundVariableKey].length === "number") {
+      rules.push(
+        varToCSSRule(
+          boundVariableKey,
+          nodeVariables[boundVariables[boundVariableKey][i].id]
+        )
+      );
+    } else {
+      rules.push(
+        varToCSSRule(
+          boundVariableKey,
+          nodeVariables[boundVariables[boundVariableKey].id]
+        )
+      );
+    }
+  });
 
-  return `--${name}: ${sanitizeValue(nodeVariable.resolvedValue)};
-${prop}: ${isFloat ? "calc(" : ""}var(--${name}, ${sanitizeValue(
-    nodeVariable.resolvedValue
-  )})${isFloat ? " * 1px)" : ""};`;
+  return customProps.concat("\n").concat(rules).join("\n");
 };

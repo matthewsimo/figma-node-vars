@@ -3,17 +3,21 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "./ui/table";
 import ResolvedValue from "./resolved-value";
-import { NodeVariable, nodeVarString } from "@/common/variables";
-import { capitalize, forMS, handleCopy } from "@/common/utils";
-import { Button } from "./ui/button";
-import { Check, Copy, Loader2 } from "lucide-react";
-import { useRef, useState } from "react";
+import {
+  NodeVariable,
+  nodeVarString,
+  nodeVarsString,
+} from "@/common/variables";
+import { capitalize } from "@/common/utils";
 import { LogData } from "./logger";
+import CopyVariableButton from "./copy-variable-button";
+import { NormalizedSelection, collapseNodeFields } from "@/common/selection";
 
 const BoundVariableTableRow = ({
   boundVar,
@@ -22,25 +26,6 @@ const BoundVariableTableRow = ({
   boundVar: string;
   variable: NodeVariable;
 }) => {
-  const textareaEl = useRef<HTMLTextAreaElement>(null);
-
-  const [copyState, setCopyState] = useState<
-    "initial" | "pending" | "complete"
-  >("initial");
-  const handleClick = async () => {
-    if (copyState === "initial") {
-      setCopyState("pending");
-      handleCopy(textareaEl, nodeVarString(boundVar, variable), variable.name);
-
-      await forMS(250);
-      setCopyState("complete");
-
-      await forMS(500);
-      setCopyState("initial");
-    }
-  };
-
-  const iconClasses = `aspect-square w-4`;
   return (
     <>
       <TableRow>
@@ -50,41 +35,16 @@ const BoundVariableTableRow = ({
           <ResolvedValue resolvedValue={variable.resolvedValue} />
         </TableCell>
         <TableCell width={"5%"} align="right">
-          <Button
-            disabled={copyState !== "initial"}
-            size="xs"
-            variant="ghost"
-            onClick={handleClick}
-          >
-            {copyState === "pending" && (
-              <Loader2
-                className={`${iconClasses} animate-spin`}
-                color="#EAAB31"
-                aria-label="Copy started"
-              />
-            )}
-            {copyState === "complete" && (
-              <Check
-                className={iconClasses}
-                color="#25952A"
-                aria-label="Copy completed"
-              />
-            )}
-            {copyState === "initial" && (
-              <Copy className={iconClasses} aria-label="Copy value" />
-            )}
-          </Button>
-          <textarea
-            ref={textareaEl}
-            readOnly
-            className="opacity-0 absolute w-[1px] h-[1px]"
+          <CopyVariableButton
+            title={`Copy ${variable.name}`}
             value={nodeVarString(boundVar, variable)}
+            name={variable.name}
           />
         </TableCell>
       </TableRow>
       {false && (
         <TableRow>
-          <TableCell colSpan={3}>
+          <TableCell colSpan={4}>
             <LogData data={variable} />
           </TableCell>
         </TableRow>
@@ -93,7 +53,9 @@ const BoundVariableTableRow = ({
   );
 };
 
-const BoundVariablesTable = ({ boundVariables, variables }) => {
+const BoundVariablesTable = ({ node }: { node: NormalizedSelection }) => {
+  const { variables } = node;
+  const boundVariables = collapseNodeFields(node.boundVariables);
   return Object.keys(boundVariables).length === 0 ? (
     <EmptyAlert
       title={"No bound variables"}
@@ -129,6 +91,21 @@ const BoundVariablesTable = ({ boundVariables, variables }) => {
             )
           )}
         </TableBody>
+        {Object.keys(boundVariables).length > 1 && (
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={4} align="right">
+                <CopyVariableButton
+                  title={`Copy ${
+                    Object.keys(boundVariables).length
+                  } variables on '${node.name}'`}
+                  value={nodeVarsString(boundVariables, variables)}
+                  name={node.name}
+                />
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        )}
       </Table>
     </>
   );

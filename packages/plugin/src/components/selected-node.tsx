@@ -23,10 +23,7 @@ const SelectedNode = ({ node }: { node: NormalizedSelection }) => {
         </div>
       </header>
       <div>
-        <BoundVariablesTable
-          boundVariables={boundVariables}
-          variables={node.variables}
-        />
+        <BoundVariablesTable node={node} />
       </div>
     </li>
   );
