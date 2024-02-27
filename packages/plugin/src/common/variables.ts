@@ -163,12 +163,9 @@ export const nodeVarsString = (
   const rules = [];
   Object.keys(boundVariables).forEach((boundVariableKey, i) => {
     if (typeof boundVariables[boundVariableKey].length === "number") {
-      rules.push(
-        varToCSSRule(
-          boundVariableKey,
-          nodeVariables[boundVariables[boundVariableKey][i].id]
-        )
-      );
+      boundVariables[boundVariableKey].forEach((bVar) => {
+        rules.push(varToCSSRule(boundVariableKey, nodeVariables[bVar.id]));
+      });
     } else {
       rules.push(
         varToCSSRule(

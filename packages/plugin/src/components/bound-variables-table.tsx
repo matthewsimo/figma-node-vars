@@ -100,7 +100,7 @@ const BoundVariablesTable = ({ node }: { node: NormalizedSelection }) => {
                     Object.keys(boundVariables).length
                   } variables on '${node.name}'`}
                   value={nodeVarsString(boundVariables, variables)}
-                  name={node.name}
+                  name={`'${node.name}' variables`}
                 />
               </TableCell>
             </TableRow>
