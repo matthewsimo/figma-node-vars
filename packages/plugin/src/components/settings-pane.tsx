@@ -19,6 +19,17 @@ const SettingsPane = () => {
         </DrawerClose>
       </DrawerHeader>
 
+      {/*
+@TODO - On deck
+- [x] ~Copy all~
+- [] Refresh Variables
+- [] Store Settings Message to call local storage
+- [] Float Suffix Text input, 'px'
+- [] Use Shorthand Props
+- [] Use Logical Properties
+- [] Switch output: CSS <-> JSON
+*/}
+
       <div className="flex-col flex justify-stretch">
         <label className="text-lg">Ouput switch: CSS vs JSON</label>
         <label className="text-lg">Float Suffix?</label>
