@@ -10,9 +10,9 @@ export function useFigmaData() {
 
 export function useSettings() {
   const {
-    data: { settings },
+    data: { figmaData },
   } = useContext(AppContext);
-  return settings;
+  return figmaData.settings;
 }
 
 export function useAppState() {

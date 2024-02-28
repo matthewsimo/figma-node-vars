@@ -27,7 +27,7 @@ function App() {
       dispatch({
         type: "SET_LOADING",
         payload: {
-          loading: false,
+          isLoading: false,
         },
       });
 

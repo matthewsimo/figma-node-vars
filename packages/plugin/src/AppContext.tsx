@@ -5,11 +5,9 @@ import { UIPostMessagePayload } from "./common/msg";
 type AppContextData = {
   // Sent from code.ts
   figmaData: UIPostMessagePayload;
-  // App Settings
-  settings: Record<string, never>;
   // Global App State
   state: {
-    loading: boolean;
+    isLoading: boolean;
     initialized: boolean;
   };
 };
@@ -21,10 +19,12 @@ const initData: AppContextData = {
     currentUser: "",
     collections: {},
     variables: {},
+    settings: {
+      lastUpdated: "",
+    },
   },
-  settings: {},
   state: {
-    loading: true,
+    isLoading: true,
     initialized: false,
   },
 };
@@ -55,7 +55,7 @@ type ReducerAction =
   | {
       type: "SET_LOADING";
       payload: {
-        loading: boolean;
+        isLoading: boolean;
       };
     }
   | {
@@ -72,7 +72,6 @@ function appReducer(data: AppContextData, action: ReducerAction) {
           figmaData: {
             ...action.payload,
           },
-          settings: {},
         },
       };
     case "SET_LOADING":
@@ -81,7 +80,7 @@ function appReducer(data: AppContextData, action: ReducerAction) {
         ...{
           state: {
             ...data.state,
-            loading: action.payload.loading,
+            isLoading: action.payload.isLoading,
           },
         },
       };

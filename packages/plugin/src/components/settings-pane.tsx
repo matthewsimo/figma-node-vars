@@ -1,9 +1,19 @@
 import { X } from "lucide-react";
 import { Button } from "./ui/button";
 import { DrawerHeader, DrawerTitle, DrawerClose } from "./ui/drawer";
+import { RefreshButton } from "./refresh-button";
+import { LogElement } from "./logger";
+import { useSettings } from "@/hooks";
+import { forMS } from "@/common/utils";
 
-const SettingsPane = () => {
-  // @TODO - build settings pane
+const SettingsPane = ({ closeDrawer }) => {
+  const { lastUpdated } = useSettings();
+
+  const handleClick = async () => {
+    await forMS(250);
+    closeDrawer();
+  };
+
   return (
     <>
       <DrawerHeader className="pb-4 flex justify-between items-center">
@@ -22,21 +32,37 @@ const SettingsPane = () => {
       {/*
 @TODO - On deck
 - [x] ~Copy all~
-- [] Refresh Variables
+- [x] Refresh Variables
 - [] Store Settings Message to call local storage
 - [] Float Suffix Text input, 'px'
 - [] Use Shorthand Props
 - [] Use Logical Properties
+
+
+Defer
 - [] Switch output: CSS <-> JSON
 */}
 
-      <div className="flex-col flex justify-stretch">
-        <label className="text-lg">Ouput switch: CSS vs JSON</label>
-        <label className="text-lg">Float Suffix?</label>
-        <label className="text-lg">Use CSS Shorthand Props?</label>
-        <label className="text-lg">Use Logical CSS Props?</label>
-        <Button className="text-lg">Refresh Variables</Button>
-      </div>
+      <LogElement>
+        <div className="flex-col flex justify-stretch space-y-4 pb-8">
+          <h3 className="mb-4 text-lg font-medium">Settings</h3>
+
+          <label className="text-lg">input: Float Suffix?</label>
+          <label className="text-lg">switch: Use CSS Shorthand Props?</label>
+          <label className="text-lg">switch: Use Logical CSS Props?</label>
+
+          <div className="flex flex-col justify-stretch space-y-2">
+            <Button onClick={handleClick}>Save Settings</Button>
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-stretch space-y-2">
+          <RefreshButton />
+          <p className="text-sm text-muted-foreground italic">
+            Last updated: {lastUpdated}
+          </p>
+        </div>
+      </LogElement>
     </>
   );
 };

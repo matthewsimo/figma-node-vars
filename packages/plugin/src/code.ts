@@ -10,7 +10,7 @@ figma.showUI(__html__, { themeColors: true });
 figma.ui.resize(500, 800);
 
 const settings = {
-  includeLibraries: false,
+  lastUpdated: new Date().toISOString(),
 };
 
 const fileKey = figma.fileKey || "Unknown";
@@ -21,6 +21,7 @@ let variables = {};
 const getVarData = async () => {
   collections = await normalizeCollections();
   variables = await normalizeVariables();
+  settings.lastUpdated = new Date().toISOString();
 
   getFigmaData();
 };
@@ -48,10 +49,17 @@ const getFigmaData = () => {
     selection,
     collections,
     variables,
+    settings,
   };
   console.log("Plugin:");
   console.log(payload);
   postToUI(payload);
+};
+
+const setStoredSetting = async (data) => {
+  // @TODO - make this work, call figma.clientStorage API
+  // https://www.figma.com/plugin-docs/api/figma-clientStorage/
+  console.log("store", { data });
 };
 
 getVarData();
@@ -65,6 +73,9 @@ figma.ui.onmessage = async (msg: PostMessage) => {
   switch (msg.type) {
     case "refreshFigmaData":
       await getVarData();
+      break;
+    case "setStoredSetting":
+      await setStoredSetting(msg.payload);
       break;
     case "log": // Demonstrate UI passing data to code.ts
       console.log("payload:");
