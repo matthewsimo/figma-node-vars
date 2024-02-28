@@ -10,7 +10,7 @@ const SettingsPane = ({ closeDrawer }) => {
   const { lastUpdated } = useSettings();
 
   const handleClick = async () => {
-    await forMS(250);
+    await forMS(500);
     closeDrawer();
   };
 
@@ -20,7 +20,12 @@ const SettingsPane = ({ closeDrawer }) => {
         <DrawerTitle>Settings</DrawerTitle>
 
         <DrawerClose asChild>
-          <Button variant="ghost" size="sm" className="group">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="group"
+            onClick={closeDrawer}
+          >
             <X
               className="transition-transform relative group-hover:top-[1px]"
               aria-label="Close Settings"
