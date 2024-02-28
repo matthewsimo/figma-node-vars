@@ -39,6 +39,9 @@ export type PostMessage =
 
 export type PluginSettings = {
   lastUpdated: string;
+  floatSuffix: string;
+  shorthandProps: boolean;
+  logicalProps: boolean;
 };
 
 export type UIPostMessagePayload = {

@@ -11,6 +11,9 @@ figma.ui.resize(500, 800);
 
 const settings = {
   lastUpdated: new Date().toISOString(),
+  floatSuffix: "px",
+  shorthandProps: true,
+  logicalProps: true,
 };
 
 const fileKey = figma.fileKey || "Unknown";

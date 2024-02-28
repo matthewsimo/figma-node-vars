@@ -21,6 +21,9 @@ const initData: AppContextData = {
     variables: {},
     settings: {
       lastUpdated: "",
+      floatSuffix: "",
+      shorthandProps: true,
+      logicalProps: true,
     },
   },
   state: {
