@@ -9,15 +9,13 @@ import {
   TableRow,
 } from "./ui/table";
 import ResolvedValue from "./resolved-value";
-import {
-  NodeVariable,
-  nodeVarString,
-  nodeVarsString,
-} from "@/common/variables";
+import { NodeVariable } from "@/common/variables";
 import { capitalize } from "@/common/utils";
 import { LogData } from "./logger";
 import CopyVariableButton from "./copy-variable-button";
-import { NormalizedSelection, collapseNodeFields } from "@/common/selection";
+import { NormalizedSelection } from "@/common/selection";
+import { useNodeVarString, useNodeVarsString } from "@/hooks/variables";
+import { useCollapseNodeFields } from "@/hooks/selection";
 
 const BoundVariableTableRow = ({
   boundVar,
@@ -26,6 +24,7 @@ const BoundVariableTableRow = ({
   boundVar: string;
   variable: NodeVariable;
 }) => {
+  const nodeVarString = useNodeVarString(boundVar, variable);
   return (
     <>
       <TableRow>
@@ -37,7 +36,7 @@ const BoundVariableTableRow = ({
         <TableCell width={"5%"} align="right">
           <CopyVariableButton
             title={`Copy ${variable.name}`}
-            value={nodeVarString(boundVar, variable)}
+            value={nodeVarString}
             name={variable.name}
           />
         </TableCell>
@@ -53,9 +52,30 @@ const BoundVariableTableRow = ({
   );
 };
 
+const BoundVariablesTableFooter = ({ node }) => {
+  const { variables } = node;
+  const boundVariables = useCollapseNodeFields(node.boundVariables);
+  const nodeVarsString = useNodeVarsString(boundVariables, variables);
+  return Object.keys(boundVariables).length > 1 ? (
+    <TableFooter>
+      <TableRow>
+        <TableCell colSpan={4} align="right">
+          <CopyVariableButton
+            title={`Copy ${Object.keys(boundVariables).length} variables on '${
+              node.name
+            }'`}
+            value={nodeVarsString}
+            name={`'${node.name}' variables`}
+          />
+        </TableCell>
+      </TableRow>
+    </TableFooter>
+  ) : null;
+};
+
 const BoundVariablesTable = ({ node }: { node: NormalizedSelection }) => {
   const { variables } = node;
-  const boundVariables = collapseNodeFields(node.boundVariables);
+  const boundVariables = useCollapseNodeFields(node.boundVariables);
   return Object.keys(boundVariables).length === 0 ? (
     <EmptyAlert
       title={"No bound variables"}
@@ -91,21 +111,7 @@ const BoundVariablesTable = ({ node }: { node: NormalizedSelection }) => {
             )
           )}
         </TableBody>
-        {Object.keys(boundVariables).length > 1 && (
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={4} align="right">
-                <CopyVariableButton
-                  title={`Copy ${
-                    Object.keys(boundVariables).length
-                  } variables on '${node.name}'`}
-                  value={nodeVarsString(boundVariables, variables)}
-                  name={`'${node.name}' variables`}
-                />
-              </TableCell>
-            </TableRow>
-          </TableFooter>
-        )}
+        <BoundVariablesTableFooter node={node} />
       </Table>
     </>
   );

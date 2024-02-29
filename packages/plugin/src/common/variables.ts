@@ -83,7 +83,10 @@ export const normalizeVariables = async (): Promise<NormalizedVariableMap> => {
   return variables;
 };
 
-const sanitizeRule = (boundVariableKey: string): string => {
+const sanitizeRule = (
+  boundVariableKey: string,
+  logicalProps: boolean = true
+): string => {
   switch (boundVariableKey) {
     case "radius":
       return "border-radius";
@@ -96,16 +99,16 @@ const sanitizeRule = (boundVariableKey: string): string => {
     case "bottomRightRadius":
       return "border-bottom-right-radius";
     case "paddingTop":
-      return "padding-block-start";
+      return logicalProps ? "padding-block-start" : "padding-top";
     case "paddingBottom":
-      return "padding-block-end";
-    case "paddingVertical":
-      return "padding-block";
+      return logicalProps ? "padding-block-end" : "padding-bottom";
     case "paddingLeft":
-      return "padding-inline-start";
+      return logicalProps ? "padding-inline-start" : "padding-left";
     case "paddingRight":
-      return "padding-inline-end";
-    case "paddingHorizontal":
+      return logicalProps ? "padding-inline-end" : "padding-right";
+    case "paddingVertical": // No non-logical equivalent!
+      return "padding-block";
+    case "paddingHorizontal": // No non-logical equivalent!
       return "padding-inline";
     case "fills":
       return "background-color";
@@ -116,8 +119,12 @@ const sanitizeRule = (boundVariableKey: string): string => {
   }
 };
 
-type SanitizedNodeVariable = { name: string; value: string; isFloat: boolean };
-const sanitizeNodeVariable = (
+export type SanitizedNodeVariable = {
+  name: string;
+  value: string;
+  isFloat: boolean;
+};
+export const sanitizeNodeVariable = (
   nodeVariable: NodeVariable
 ): SanitizedNodeVariable => {
   const { name, resolvedValue } = nodeVariable;
@@ -131,50 +138,19 @@ const sanitizeNodeVariable = (
   };
 };
 
-const varToCustomPropString = (nodeVariable: NodeVariable): string => {
+export const varToCustomPropString = (nodeVariable: NodeVariable): string => {
   const { name, value } = sanitizeNodeVariable(nodeVariable);
   return `--${name}: ${value};`;
 };
 
-const varToCSSRule = (boundVariableKey, nodeVariable): string => {
-  const prop = sanitizeRule(boundVariableKey);
+export const varToCSSRule = (
+  boundVariableKey,
+  nodeVariable,
+  { floatSuffix = "px", logicalProps = true }
+): string => {
+  const prop = sanitizeRule(boundVariableKey, logicalProps);
   const { name, value, isFloat } = sanitizeNodeVariable(nodeVariable);
   return `${prop}: ${isFloat ? "calc(" : ""}var(--${name}, ${value})${
-    isFloat ? " * 1px)" : ""
+    isFloat ? ` * 1${floatSuffix})` : ""
   };`;
-};
-
-export const nodeVarString = (
-  boundVariableKey: string,
-  nodeVariable: NodeVariable
-): string => {
-  return [varToCustomPropString(nodeVariable)]
-    .concat(varToCSSRule(boundVariableKey, nodeVariable))
-    .join("\n");
-};
-
-export const nodeVarsString = (
-  boundVariables: SceneNode["boundVariables"],
-  nodeVariables: NodeVariableMap
-): string => {
-  const customProps = Object.keys(nodeVariables).map((key) =>
-    varToCustomPropString(nodeVariables[key])
-  );
-  const rules = [];
-  Object.keys(boundVariables).forEach((boundVariableKey) => {
-    if (typeof boundVariables[boundVariableKey].length === "number") {
-      boundVariables[boundVariableKey].forEach((bVar) => {
-        rules.push(varToCSSRule(boundVariableKey, nodeVariables[bVar.id]));
-      });
-    } else {
-      rules.push(
-        varToCSSRule(
-          boundVariableKey,
-          nodeVariables[boundVariables[boundVariableKey].id]
-        )
-      );
-    }
-  });
-
-  return customProps.concat("\n").concat(rules).join("\n");
 };

@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { UIPostMessage } from "./common/msg";
-import { useAppState, useDispatch, useFigmaData } from "./hooks";
+import { useAppState, useDispatch, useFigmaData } from "./hooks/appContext";
 import EmptyAlert from "./components/empty-alert";
 import SelectedNode from "./components/selected-node";
 import { ScrollArea } from "./components/ui/scroll-area";

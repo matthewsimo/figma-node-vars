@@ -8,10 +8,7 @@ export type PostMessage =
     }
   | {
       type: "setStoredSetting";
-      payload: {
-        key: string;
-        value: unknown;
-      };
+      payload: Omit<PluginSettings, "lastUpdated">;
     }
   | {
       type: "log";

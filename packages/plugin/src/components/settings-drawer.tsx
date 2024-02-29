@@ -7,7 +7,11 @@ import { useState } from "react";
 const SettingsDrawer = () => {
   const [isOpen, setOpen] = useState<boolean>();
 
-  const closeDrawer = () => setOpen(false);
+  const closeDrawer = () => {
+    console.log({ close: true });
+
+    setOpen(false);
+  };
 
   return (
     <div className="grow flex justify-end">

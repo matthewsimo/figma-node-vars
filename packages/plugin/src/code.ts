@@ -1,5 +1,5 @@
 import { normalizeCollections } from "./common/collections";
-import { postToUI, PostMessage } from "./common/msg";
+import { postToUI, PostMessage, PluginSettings } from "./common/msg";
 import { normalizeSelection } from "./common/selection";
 import { normalizeVariables } from "./common/variables";
 // Figma Documentation Links:
@@ -59,7 +59,7 @@ const getFigmaData = () => {
   postToUI(payload);
 };
 
-const setStoredSetting = async (data) => {
+const setStoredSetting = async (data: Omit<PluginSettings, "lastUpdated">) => {
   // @TODO - make this work, call figma.clientStorage API
   // https://www.figma.com/plugin-docs/api/figma-clientStorage/
   console.log("store", { data });

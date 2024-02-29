@@ -1,4 +1,4 @@
-import { useFigmaData } from "@/hooks";
+import { useFigmaData } from "@/hooks/appContext";
 import SettingsDrawer from "./settings-drawer";
 
 const Header = () => {

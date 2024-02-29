@@ -49,7 +49,7 @@ export const normalizeSelection = (
   return normalizedSelection;
 };
 
-const shouldCollapseKeys = (boundVariables, keys: string[]) => {
+export const shouldCollapseKeys = (boundVariables, keys: string[]) => {
   if (keys.every((k) => k in boundVariables)) {
     return keys.every(
       (k) => boundVariables[k].id === boundVariables[keys[0]].id
@@ -59,7 +59,11 @@ const shouldCollapseKeys = (boundVariables, keys: string[]) => {
   }
 };
 
-const collapseKeysToKey = (boundVariables, keys: string[], key: string) => {
+export const collapseKeysToKey = (
+  boundVariables,
+  keys: string[],
+  key: string
+) => {
   const value = boundVariables[keys[0]];
   keys.forEach((k) => {
     delete boundVariables[k];
@@ -67,43 +71,4 @@ const collapseKeysToKey = (boundVariables, keys: string[], key: string) => {
 
   boundVariables[key] = value;
   return boundVariables;
-};
-
-const radiusKeys = [
-  "topLeftRadius",
-  "topRightRadius",
-  "bottomLeftRadius",
-  "bottomRightRadius",
-];
-
-const paddingBlockKeys = ["paddingTop", "paddingBottom"];
-const paddingInlineKeys = ["paddingLeft", "paddingRight"];
-const paddingKeys = [...paddingBlockKeys, ...paddingInlineKeys];
-
-export const collapseNodeFields = (
-  boundVariables: SceneNode["boundVariables"]
-) => {
-  let boundVariablesCopy = { ...boundVariables };
-
-  boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, radiusKeys)
-    ? collapseKeysToKey(boundVariablesCopy, radiusKeys, "radius")
-    : boundVariablesCopy;
-
-  boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, paddingKeys)
-    ? collapseKeysToKey(boundVariablesCopy, paddingKeys, "padding")
-    : boundVariablesCopy;
-
-  boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, paddingBlockKeys)
-    ? collapseKeysToKey(boundVariablesCopy, paddingBlockKeys, "paddingVertical")
-    : boundVariablesCopy;
-
-  boundVariablesCopy = shouldCollapseKeys(boundVariablesCopy, paddingInlineKeys)
-    ? collapseKeysToKey(
-        boundVariablesCopy,
-        paddingInlineKeys,
-        "paddingHorizontal"
-      )
-    : boundVariablesCopy;
-
-  return boundVariablesCopy;
 };

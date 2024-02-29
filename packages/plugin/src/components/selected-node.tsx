@@ -1,9 +1,10 @@
-import { NormalizedSelection, collapseNodeFields } from "@/common/selection";
+import { NormalizedSelection } from "@/common/selection";
 import BoundVariablesTable from "./bound-variables-table";
 import { pluralize } from "@/common/utils";
+import { useCollapseNodeFields } from "@/hooks/selection";
 
 const SelectedNode = ({ node }: { node: NormalizedSelection }) => {
-  const boundVariables = collapseNodeFields(node.boundVariables);
+  const boundVariables = useCollapseNodeFields(node.boundVariables);
 
   const boundCount = Object.keys(boundVariables).length;
   const boundSummary = `${pluralize("Attribute", boundCount)}: ${boundCount}`;

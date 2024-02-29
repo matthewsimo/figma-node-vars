@@ -1,7 +1,7 @@
 import { Check, RefreshCcw } from "lucide-react";
 import { Button } from "./ui/button";
 import { postToFigma } from "@/common/msg";
-import { useDispatch } from "@/hooks";
+import { useDispatch } from "@/hooks/appContext";
 import { useState } from "react";
 import { forMS } from "@/common/utils";
 

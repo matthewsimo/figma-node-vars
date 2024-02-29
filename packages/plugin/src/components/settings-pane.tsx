@@ -2,17 +2,11 @@ import { X } from "lucide-react";
 import { Button } from "./ui/button";
 import { DrawerHeader, DrawerTitle, DrawerClose } from "./ui/drawer";
 import { RefreshButton } from "./refresh-button";
-import { LogElement } from "./logger";
-import { useSettings } from "@/hooks";
-import { forMS } from "@/common/utils";
+import { useSettings } from "@/hooks/appContext";
+import SettingsForm from "./settings-form";
 
-const SettingsPane = ({ closeDrawer }) => {
+const SettingsPane = ({ closeDrawer }: { closeDrawer: () => void }) => {
   const { lastUpdated } = useSettings();
-
-  const handleClick = async () => {
-    await forMS(500);
-    closeDrawer();
-  };
 
   return (
     <>
@@ -39,35 +33,29 @@ const SettingsPane = ({ closeDrawer }) => {
 - [x] ~Copy all~
 - [x] Refresh Variables
 - [] Store Settings Message to call local storage
-- [] Float Suffix Text input, 'px'
-- [] Use Shorthand Props
-- [] Use Logical Properties
+- [x] Float Suffix Text input, 'px'
+    - [x] fns
+    - [x] form
+- [x] Use Shorthand Props
+    - [x] fns
+    - [x] form
+- [x] Use Logical Properties
+    - [x] fns
+    - [x] form
 
 
 Defer
 - [] Switch output: CSS <-> JSON
 */}
 
-      <LogElement>
-        <div className="flex-col flex justify-stretch space-y-4 pb-8">
-          <h3 className="mb-4 text-lg font-medium">Settings</h3>
+      <SettingsForm closeDrawer={() => closeDrawer()} />
 
-          <label className="text-lg">input: Float Suffix?</label>
-          <label className="text-lg">switch: Use CSS Shorthand Props?</label>
-          <label className="text-lg">switch: Use Logical CSS Props?</label>
-
-          <div className="flex flex-col justify-stretch space-y-2">
-            <Button onClick={handleClick}>Save Settings</Button>
-          </div>
-        </div>
-
-        <div className="flex flex-col justify-stretch space-y-2">
-          <RefreshButton />
-          <p className="text-sm text-muted-foreground italic">
-            Last updated: {lastUpdated}
-          </p>
-        </div>
-      </LogElement>
+      <div className="flex flex-col justify-stretch space-y-2">
+        <RefreshButton />
+        <p className="text-sm text-muted-foreground italic">
+          Last updated: {lastUpdated}
+        </p>
+      </div>
     </>
   );
 };
