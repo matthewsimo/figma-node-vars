@@ -1,3 +1,4 @@
+import { verbose } from "./logging";
 import { colorToString } from "./utils";
 
 export type NormalizedVariable = Pick<
@@ -51,7 +52,7 @@ export const getVarById = (varId: string): PreNodeVariable => {
     variableCollectionId,
     resolveForConsumer,
   };
-  false && console.log({ variable });
+  verbose && console.log({ variable });
   return variable;
 };
 

@@ -1,5 +1,6 @@
 import { NormalizedCollectionMap } from "./collections";
 import { NormalizedSelection } from "./selection";
+import { PluginSettings, StoredSettings } from "./app";
 import { NormalizedVariableMap } from "./variables";
 
 export type PostMessage =
@@ -7,8 +8,8 @@ export type PostMessage =
       type: "refreshFigmaData";
     }
   | {
-      type: "setStoredSetting";
-      payload: Omit<PluginSettings, "lastUpdated">;
+      type: "setStoredSettings";
+      payload: StoredSettings;
     }
   | {
       type: "log";
@@ -34,16 +35,7 @@ export type PostMessage =
       type: "toggleLibraries";
     };
 
-export type PluginSettings = {
-  lastUpdated: string;
-  floatSuffix: string;
-  shorthandProps: boolean;
-  logicalProps: boolean;
-};
-
 export type UIPostMessagePayload = {
-  fileKey: string;
-  currentUser: string;
   selection: NormalizedSelection[];
   collections: NormalizedCollectionMap;
   variables: NormalizedVariableMap;

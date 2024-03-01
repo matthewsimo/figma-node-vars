@@ -11,7 +11,6 @@ import {
 import ResolvedValue from "./resolved-value";
 import { NodeVariable } from "@/common/variables";
 import { capitalize } from "@/common/utils";
-import { LogData } from "./logger";
 import CopyVariableButton from "./copy-variable-button";
 import { NormalizedSelection } from "@/common/selection";
 import { useNodeVarString, useNodeVarsString } from "@/hooks/variables";
@@ -41,13 +40,6 @@ const BoundVariableTableRow = ({
           />
         </TableCell>
       </TableRow>
-      {false && (
-        <TableRow>
-          <TableCell colSpan={4}>
-            <LogData data={variable} />
-          </TableCell>
-        </TableRow>
-      )}
     </>
   );
 };

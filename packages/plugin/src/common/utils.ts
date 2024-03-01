@@ -1,3 +1,4 @@
+import { verbose } from "./logging";
 import { postToFigma } from "./msg";
 
 export const forMS = async (ms: number) =>
@@ -30,7 +31,7 @@ export const handleCopy = async (
 ) => {
   textareaEl?.current?.select();
 
-  false && console.log({ copy: true, content, name });
+  verbose && console.log({ copy: true, content, name });
   let message = "";
   let isError = false;
   try {

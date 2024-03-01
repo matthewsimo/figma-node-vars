@@ -8,8 +8,6 @@ const SettingsDrawer = () => {
   const [isOpen, setOpen] = useState<boolean>();
 
   const closeDrawer = () => {
-    console.log({ close: true });
-
     setOpen(false);
   };
 

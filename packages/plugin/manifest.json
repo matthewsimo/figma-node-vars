@@ -1,12 +1,12 @@
 {
   "name": "Node Vars",
+  "id": "1345121556751264927",
   "api": "1.0.0",
   "main": "dist/code/index.js",
   "ui": "dist/ui/index.html",
   "capabilities": [],
   "enableProposedApi": false,
-  "enablePrivatePluginApi": true,
-  "permissions": ["currentuser", "teamlibrary"],
+  "permissions": [],
   "editorType": ["figma"],
   "networkAccess": {
     "allowedDomains": ["none"]

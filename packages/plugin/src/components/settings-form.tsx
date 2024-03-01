@@ -18,7 +18,8 @@ import { Switch } from "./ui/switch";
 import { Check, Loader2, SaveAll } from "lucide-react";
 import { useState } from "react";
 import { forMS } from "@/common/utils";
-import { PluginSettings, postToFigma } from "@/common/msg";
+import { postToFigma } from "@/common/msg";
+import { StoredSettings } from "@/common/app";
 
 const FormSchema = z.object({
   floatSuffix: z.string().min(1),
@@ -45,8 +46,8 @@ const SettingsForm = ({ closeDrawer }: { closeDrawer: () => void }) => {
     console.log("submitted:", { data, closeDrawer });
     setSateState("pending");
     postToFigma({
-      type: "setStoredSetting",
-      payload: data as Omit<PluginSettings, "lastUpdated">,
+      type: "setStoredSettings",
+      payload: data as StoredSettings,
     });
 
     await forMS(250);

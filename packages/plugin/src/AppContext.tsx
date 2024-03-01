@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useReducer } from "react";
 import { UIPostMessagePayload } from "./common/msg";
+import { verbose } from "./common/logging";
 
 type AppContextData = {
   // Sent from code.ts
@@ -15,8 +16,6 @@ type AppContextData = {
 const initData: AppContextData = {
   figmaData: {
     selection: [],
-    fileKey: "",
-    currentUser: "",
     collections: {},
     variables: {},
     settings: {
@@ -66,7 +65,7 @@ type ReducerAction =
     };
 
 function appReducer(data: AppContextData, action: ReducerAction) {
-  false && console.log("appReducer:", { data, action });
+  verbose && console.log("appReducer:", { data, action });
   switch (action.type) {
     case "UPDATE_FIGMA_DATA":
       return {
