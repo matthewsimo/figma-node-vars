@@ -1,6 +1,8 @@
-# Figma Plugin Template Project
+# Node Vars Figma Plugin
 
-This is a template project that aims to accelerate Figma Plugin Development.
+https://www.figma.com/community/plugin/1345121556751264927/node-vars
+
+This is a Figma Plugin that lets you see what your currently selected nodes are using what variables.
 
 It's a monorepo with two packages:
 

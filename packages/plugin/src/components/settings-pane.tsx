@@ -28,26 +28,6 @@ const SettingsPane = ({ closeDrawer }: { closeDrawer: () => void }) => {
         </DrawerClose>
       </DrawerHeader>
 
-      {/*
-@TODO - On deck
-- [x] ~Copy all~
-- [x] Refresh Variables
-- [] Store Settings Message to call local storage
-- [x] Float Suffix Text input, 'px'
-    - [x] fns
-    - [x] form
-- [x] Use Shorthand Props
-    - [x] fns
-    - [x] form
-- [x] Use Logical Properties
-    - [x] fns
-    - [x] form
-
-
-Defer
-- [] Switch output: CSS <-> JSON
-*/}
-
       <SettingsForm closeDrawer={() => closeDrawer()} />
 
       <div className="flex flex-col justify-stretch space-y-2">
