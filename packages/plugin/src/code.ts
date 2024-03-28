@@ -3,7 +3,7 @@ import { getVarData, init, setStoredSettings } from "./common/app";
 import { verbose } from "./common/logging";
 
 figma.showUI(__html__, { themeColors: true });
-figma.ui.resize(500, 800);
+figma.ui.resize(600, 800);
 
 (async () => {
   await init();

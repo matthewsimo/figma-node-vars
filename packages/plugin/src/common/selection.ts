@@ -13,7 +13,6 @@ export const normalizeSelection = (
   const normalizedSelection = [];
   selection.forEach((node): void => {
     const { id, name, boundVariables = {}, type } = node;
-    console.log({ id, name, variables: boundVariables });
     const variables = {};
 
     Object.keys(boundVariables).forEach((k) => {

@@ -43,7 +43,6 @@ const SettingsForm = ({ closeDrawer }: { closeDrawer: () => void }) => {
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    console.log("submitted:", { data, closeDrawer });
     setSateState("pending");
     postToFigma({
       type: "setStoredSettings",

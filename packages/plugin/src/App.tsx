@@ -6,6 +6,7 @@ import SelectedNode from "./components/selected-node";
 import { ScrollArea } from "./components/ui/scroll-area";
 import { LogElement } from "./components/logger";
 import Header from "./components/header";
+import { verbose } from "./common/logging";
 
 function App() {
   const dispatch = useDispatch();
@@ -15,7 +16,7 @@ function App() {
 
   const handleMessage = useCallback(
     (msg: UIPostMessage) => {
-      true && console.log({ handleMessage: true, msg });
+      verbose && console.log({ handleMessage: true, msg });
 
       dispatch({
         type: "UPDATE_FIGMA_DATA",
