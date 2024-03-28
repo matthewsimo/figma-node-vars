@@ -4,13 +4,11 @@ import { postToFigma } from "./msg";
 export const forMS = async (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
-export const prettyNum = (num) => parseFloat(Number(num).toFixed(2));
-
 export const colorToString = (color: RGB | RGBA): string => {
   const { r, g, b, a = 1 } = color as RGBA;
-  return `rgba(${prettyNum(r) * 255}, ${prettyNum(g) * 255}, ${
-    prettyNum(b) * 255
-  }, ${prettyNum(a)})`;
+  return `rgba(${(r * 255).toFixed(0)}, ${(g * 255).toFixed(0)}, ${(
+    b * 255
+  ).toFixed(0)}, ${a.toFixed(2)})`;
 };
 
 export const pluralize = (str: string, count: number, suffix = "s") => {

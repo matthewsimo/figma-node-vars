@@ -28,7 +28,6 @@ export const init = async () => {
 
 export const getStoredSettings = async (): Promise<PluginSettings> => {
   const storedSettings = await figma.clientStorage.getAsync("settings");
-  console.log("get stored settings:", { storedSettings });
   return Object.assign({}, settings, storedSettings);
 };
 
@@ -43,7 +42,7 @@ export const setStoredSettings = async (
       figma.notify("Settings saved");
     })
     .catch((e) => {
-      true && console.log("Save settings error:", { e });
+      verbose && console.log("Save settings error:", { e });
       figma.notify("Error saving settings", { error: true });
     })
     .finally(() => {

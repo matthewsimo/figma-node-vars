@@ -4,15 +4,16 @@ import {
   varToCSSRule,
   varToCustomPropString,
 } from "@/common/variables";
-import { useSettings } from "./appContext";
+import { useFigmaData, useSettings } from "./appContext";
 
 export const useNodeVarString = (
   boundVariableKey: string,
   nodeVariable: NodeVariable
 ): string => {
   const settings = useSettings();
-  return [varToCustomPropString(nodeVariable)]
-    .concat(varToCSSRule(boundVariableKey, nodeVariable, settings))
+  const { collections } = useFigmaData();
+  return [varToCustomPropString(nodeVariable, collections)]
+    .concat(varToCSSRule(boundVariableKey, nodeVariable, settings, collections))
     .join("\n");
 };
 
@@ -21,15 +22,21 @@ export const useNodeVarsString = (
   nodeVariables: NodeVariableMap
 ): string => {
   const settings = useSettings();
+  const { collections } = useFigmaData();
   const customProps = Object.keys(nodeVariables).map((key) =>
-    varToCustomPropString(nodeVariables[key])
+    varToCustomPropString(nodeVariables[key], collections)
   );
   const rules = [];
   Object.keys(boundVariables).forEach((boundVariableKey) => {
     if (typeof boundVariables[boundVariableKey].length === "number") {
       boundVariables[boundVariableKey].forEach((bVar) => {
         rules.push(
-          varToCSSRule(boundVariableKey, nodeVariables[bVar.id], settings)
+          varToCSSRule(
+            boundVariableKey,
+            nodeVariables[bVar.id],
+            settings,
+            collections
+          )
         );
       });
     } else {
@@ -37,7 +44,8 @@ export const useNodeVarsString = (
         varToCSSRule(
           boundVariableKey,
           nodeVariables[boundVariables[boundVariableKey].id],
-          settings
+          settings,
+          collections
         )
       );
     }

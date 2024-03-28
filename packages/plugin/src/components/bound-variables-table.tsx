@@ -44,7 +44,7 @@ const BoundVariableTableRow = ({
   );
 };
 
-const BoundVariablesTableFooter = ({ node }) => {
+const BoundVariablesTableFooter = ({ node }: { node: NormalizedSelection }) => {
   const { variables } = node;
   const boundVariables = useCollapseNodeFields(node.boundVariables);
   const nodeVarsString = useNodeVarsString(boundVariables, variables);

@@ -1,3 +1,4 @@
+import { NormalizedCollectionMap } from "./collections";
 import { verbose } from "./logging";
 import { colorToString } from "./utils";
 
@@ -126,32 +127,50 @@ export type SanitizedNodeVariable = {
   isFloat: boolean;
 };
 export const sanitizeNodeVariable = (
-  nodeVariable: NodeVariable
+  nodeVariable: NodeVariable,
+  collections: NormalizedCollectionMap
 ): SanitizedNodeVariable => {
-  const { name, resolvedValue } = nodeVariable;
+  const { name, resolvedValue, variableCollectionId } = nodeVariable;
   const { resolvedType, value } = resolvedValue;
+  const collectionName = collections[variableCollectionId]?.name || "";
 
   return {
-    name: name.toLowerCase().replace(" ", "-"),
+    name: collectionName
+      .concat(collectionName ? "-" : "")
+      .concat(name)
+      .toLowerCase()
+      .replaceAll("❖-", "")
+      .replaceAll(" ", "-")
+      .replaceAll("/", "-"),
     value:
       resolvedType === "COLOR" ? colorToString(value as RGBA) : String(value),
     isFloat: resolvedType === "FLOAT",
   };
 };
 
-export const varToCustomPropString = (nodeVariable: NodeVariable): string => {
-  const { name, value } = sanitizeNodeVariable(nodeVariable);
-  return `--${name}: ${value};`;
+const asCSSCustomProp = (name: string): string =>
+  `${name.startsWith("--") ? "" : "--"}${name}`;
+
+export const varToCustomPropString = (
+  nodeVariable: NodeVariable,
+  collections: NormalizedCollectionMap
+): string => {
+  const { name, value } = sanitizeNodeVariable(nodeVariable, collections);
+  return `${asCSSCustomProp(name)}: ${value};`;
 };
 
 export const varToCSSRule = (
   boundVariableKey,
   nodeVariable,
-  { floatSuffix = "px", logicalProps = true }
+  { floatSuffix = "px", logicalProps = true },
+  collections: NormalizedCollectionMap
 ): string => {
   const prop = sanitizeRule(boundVariableKey, logicalProps);
-  const { name, value, isFloat } = sanitizeNodeVariable(nodeVariable);
-  return `${prop}: ${isFloat ? "calc(" : ""}var(--${name}, ${value})${
-    isFloat ? ` * 1${floatSuffix})` : ""
-  };`;
+  const { name, value, isFloat } = sanitizeNodeVariable(
+    nodeVariable,
+    collections
+  );
+  return `${prop}: var(${asCSSCustomProp(name)}, ${value}${
+    isFloat ? floatSuffix : ""
+  });`;
 };
